@@ -5,6 +5,8 @@ const mysql = require("mysql");
 
 const app = express();
 
+app.use(express.json());
+
 // Create connection
 const db = mysql.createConnection({
   host: "localhost",
@@ -29,6 +31,21 @@ app.get("/getadds", (req, res) => {
   db.query(sqlSelect, (err, result) => {
     console.log(result);
     res.send(result);
+  });
+});
+
+app.post("/register", (req, res) => {
+  
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
+  const email = req.body.email;
+  const username = req.body.username;
+  const password = req.body.password;
+  const country = req.body.country;
+  
+  db.query(("INSERT INTO users (firstname, lastname, email, username, password, country) VALUES (?,?,?,?,?,?)"),
+  [firstname, lastname, email, username, password, country], (err, result) => {
+    console.log("Updated user..." + result);
   });
 });
 
