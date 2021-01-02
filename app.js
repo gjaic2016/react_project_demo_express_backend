@@ -52,3 +52,5 @@ app.post("/register", (req, res) => {
 app.listen("3001", () => {
   console.log("Server started, port 3001");
 });
+
+//log
