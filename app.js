@@ -35,18 +35,41 @@ app.get("/getadds", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
   const email = req.body.email;
   const username = req.body.username;
   const password = req.body.password;
   const country = req.body.country;
-  
-  db.query(("INSERT INTO users (firstname, lastname, email, username, password, country) VALUES (?,?,?,?,?,?)"),
-  [firstname, lastname, email, username, password, country], (err, result) => {
-    console.log("Updated user..." + result);
-  });
+
+  db.query(
+    "INSERT INTO users (firstname, lastname, email, username, password, country) VALUES (?,?,?,?,?,?)",
+    [firstname, lastname, email, username, password, country],
+    (err, result) => {
+      console.log("Updated user..." + result);
+    }
+  );
+});
+
+app.post("/login", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  db.query(
+    "SELECT * FROM users WHERE username = ? AND password = ?",
+    [username, password],
+    (err, result) => {
+      if (err) {
+        res.send({ err: err });
+      }
+
+      if (result.length > 0) {
+        res.send(result);
+      } else {
+        res.send({ message: "Pogrešna lozinka/korisničko ime" });
+      }
+    }
+  );
 });
 
 app.listen("3001", () => {
