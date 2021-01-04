@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
 
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 const app = express();
 
 app.use(express.json());
@@ -42,13 +45,18 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   const country = req.body.country;
 
-  db.query(
-    "INSERT INTO users (firstname, lastname, email, username, password, country) VALUES (?,?,?,?,?,?)",
-    [firstname, lastname, email, username, password, country],
-    (err, result) => {
-      console.log("Updated user..." + result);
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      console.log(err);
     }
-  );
+    db.query(
+      "INSERT INTO users (firstname, lastname, email, username, password, country) VALUES (?,?,?,?,?,?)",
+      [firstname, lastname, email, username, hash, country],
+      (err, result) => {
+        console.log("Updated user..." + result);
+      }
+    );
+  });
 });
 
 app.post("/login", (req, res) => {
@@ -56,17 +64,23 @@ app.post("/login", (req, res) => {
   const password = req.body.password;
 
   db.query(
-    "SELECT * FROM users WHERE username = ? AND password = ?",
-    [username, password],
+    "SELECT * FROM users WHERE username = ?",
+    [username],
     (err, result) => {
       if (err) {
         res.send({ err: err });
       }
 
       if (result.length > 0) {
-        res.send(result);
+        bcrypt.compare(password, result[0].password, (error, response) => {
+          if(response) {
+            res.send(result);
+          } else {
+            res.send({ message: "Pogrešna lozinka/korisničko ime" });
+          }
+        })
       } else {
-        res.send({ message: "Pogrešna lozinka/korisničko ime" });
+        res.send({ message: "Korisnik ne postoji" });
       }
     }
   );
