@@ -69,6 +69,36 @@ app.get("/getadds", (req, res) => {
   });
 });
 
+app.get("/getAddsCount", (req, res) => {
+  res.header("Content-Type", "application/json;charset=UTF-8");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+
+  let sqlSelect = "SELECT COUNT(*) AS ADDS FROM adds WHERE archive='N'";
+  db.query(sqlSelect, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/getAddsCountArchived", (req, res) => {
+  res.header("Content-Type", "application/json;charset=UTF-8");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+
+  let sqlSelect = "SELECT COUNT(*) AS ARCHIVED FROM adds WHERE archive='Y'";
+  db.query(sqlSelect, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
 app.post("/register", (req, res) => {
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
@@ -131,4 +161,3 @@ app.post("/login", (req, res) => {
 app.listen("3001", () => {
   console.log("Server started, port 3001");
 });
-
