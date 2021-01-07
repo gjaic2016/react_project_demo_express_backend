@@ -99,6 +99,14 @@ app.get("/getAddsCountArchived", (req, res) => {
   });
 });
 
+app.get("/countries", (req, res) => {
+  let sqlSelect = "SELECT * FROM countries";
+  db.query(sqlSelect, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
 app.post("/register", (req, res) => {
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
