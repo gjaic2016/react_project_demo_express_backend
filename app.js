@@ -141,7 +141,7 @@ app.post("/saveAdd", (req, res) => {
     [title, description, picture, archive, date],
     (err, result) => {
       console.log(err);
-      console.log("result => " + title, description, picture, archive, date);
+      console.log("Updated add result => " + title, description, picture, archive, date);
     }
   );
 });
