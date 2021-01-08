@@ -129,6 +129,23 @@ app.post("/register", (req, res) => {
   });
 });
 
+app.post("/saveAdd", (req, res) => {
+  const title = req.body.title;
+  const description = req.body.description;
+  const picture = req.body.picture;
+  const archive = req.body.archive;
+  const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  db.query(
+    "INSERT INTO adds (title, description, picture, archive, date) VALUES (?,?,?,?,?)",
+    [title, description, picture, archive, date],
+    (err, result) => {
+      console.log(err);
+      console.log("result => " + title, description, picture, archive, date);
+    }
+  );
+});
+
 app.get("/login", (req, res) => {
   if (req.session.user) {
     res.send({ loggedIn: true, user: req.session.user });
